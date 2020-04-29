@@ -1,3 +1,6 @@
+import sys
+import copy
+
 import pandas as pd
 
 """
@@ -36,9 +39,109 @@ class Solver():
     def __init__(self, courses):
         self.courses = courses
 
-    def solve(self):
-        return 0
+        self.room_assignments       = dict()
+        self.instructor_assignments = dict()
 
+    def solve(self):
+        unassigned_section = self.is_complete_assignment()
+
+        if not unassigned_section:
+            return self.courses
+
+        result = None
+
+        print(unassigned_section)
+
+        if not unassigned_section.timeslot:
+            for timeslot in Course.timeslots:
+
+                unassigned_section.timeslot = timeslot
+                if self.is_valid_assignment():
+                    result = self.solve()
+                    if result:
+                        return result
+                else:
+                    unassigned_section.timeslot = None
+
+        elif not unassigned_section.room:
+            for room in unassigned_section.rooms:
+
+                unassigned_section.room = room
+
+                if room not in self.room_assignments:
+                    self.room_assignments[room] = list()
+                self.room_assignments[room].append(unassigned_section)
+
+                if self.is_valid_assignment():
+                    result = self.solve()
+                    if result:
+                        return result
+                else:
+                    unassigned_section.room = None
+                    self.room_assignments[room].remove(unassigned_section)
+
+        elif not unassigned_section.instructor:
+            for instructor in unassigned_section.instructors:
+
+                unassigned_section.instructor = instructor
+
+                if instructor not in self.instructor_assignments:
+                    self.instructor_assignments[instructor] = list()
+                self.instructor_assignments[instructor].append(unassigned_section)
+
+                if self.is_valid_assignment():
+                    result = self.solve()
+                    if result:
+                        return result
+                else:
+                    unassigned_section.instructor = None
+                    self.instructor_assignments[instructor].remove(unassigned_section)
+        
+        return result
+
+    def is_complete_assignment(self):
+        for subject in self.courses:
+            for section in self.courses[subject]:
+                if not section.timeslot or not section.room or not section.instructor:
+                    return section
+        return None
+
+    def is_valid_assignment(self):
+        return self.room_collision() and self.instructor_collision()
+
+    def room_collision(self):
+        for room in self.room_assignments:
+
+            sections = self.room_assignments[room]
+
+            for i in range(len(sections)):
+                if not sections[i].timeslot:
+                    continue
+                for j in range(i + 1, len(sections)):
+                    if not sections[j].timeslot:
+                        continue
+                    elif sections[i].timeslot == sections[j].timeslot:
+                        #print(sections[i].timeslot, sections[j].timeslot)
+                        return False
+
+        return True
+
+    def instructor_collision(self):
+        for instructor in self.instructor_assignments:
+
+            sections = self.instructor_assignments[instructor]
+
+            for i in range(len(sections)):
+                if not sections[i].timeslot:
+                    continue
+                for j in range(i + 1, len(sections)):
+                    if not sections[j].timeslot:
+                        continue
+                    elif sections[i].timeslot == sections[j].timeslot:
+                        #print(instructor, sections[i].timeslot, sections[j].timeslot)
+                        return False
+
+        return True
 
 
 """
@@ -76,16 +179,30 @@ class Timeslot:
         else:
             return False
 
+    def __repr__(self):
+        return f'{self.days} : {self.time}'
+
 
 class Course:
 
     # Timeslot domain (TEST)
     timeslots = [
-        Timeslot( ['Mo', 'We'], (1000, 1115) ),
-        Timeslot( ['Mo', 'We'], (1130, 1245) ),
-        Timeslot( ['Tu', 'Th'], (1500, 1615) ),
-        Timeslot( ['Fr'],       ( 900, 1015) )
+        #Timeslot( ['Mo', 'We'], ( 800,  915) ),
+        #Timeslot( ['Mo', 'We'], (1000, 1115) ),
+        #Timeslot( ['Mo', 'We'], (1600, 1715) ),
+        #Timeslot( ['Tu', 'Th'], (1400, 1515) ),
+        #Timeslot( ['Tu', 'Th'], (1000, 1115) ),
+        #Timeslot( ['Tu', 'Th'], (1530, 1645) ),
+        #Timeslot( ['Tu', 'Th'], (1500, 1615) ),
+        #Timeslot( ['Fr'],       ( 900, 1015) )
     ]
+
+    start = 800
+    for _ in range(12):
+        timeslots.append( Timeslot( ['Mo', 'We'], ( start,  start + 115) ) )
+        timeslots.append( Timeslot( ['Tu', 'Th'], ( start,  start + 115) ) )
+        timeslots.append( Timeslot( ['Fr'],       ( start,  start + 115) ) )
+        start += 100
 
     def __init__(self, subject, course, section, rooms, instructors):
         # Course attributes
@@ -130,13 +247,22 @@ def read_in_csv():
     return courses
 
 
+def write_to_csv(schedule):
+    data = list()
+
+    for subject in schedule:
+        for section in schedule[subject]:
+            data.append( [section.subject, section.course, section.section, section.timeslot.days, section.timeslot.time, section.room, section.instructor] )
+
+    pd.DataFrame(data).to_csv('schedule.csv', index=False, header=['subject','course','section','days','time','room','instructor'])
+
+
 def main():
     
-    courses = read_in_csv()
-    solver  = Solver(courses)
-    results = solver.solve()
-
-    print(results)
+    courses  = read_in_csv()
+    solver   = Solver(courses)
+    schedule = solver.solve()
+    write_to_csv(schedule)
 
 if __name__ == '__main__':
     main()
