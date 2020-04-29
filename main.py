@@ -13,16 +13,16 @@ CS 350 Final Project: Course Scheduling
 
 """
     TODO:
-        Add constraint functions
-        Timeslot domain
-        Implement Day/Time collision checking for same classroom (hashmap of classrooms?)
-        Implement Day/Time collision checking for same instructor (hashmap of instructors?)
+      X Add constraint functions
+      X Timeslot domain
+      X Implement Day/Time collision checking for same classroom (hashmap of classrooms?)
+      X Implement Day/Time collision checking for same instructor (hashmap of instructors?)
 
         ~ Instructor preferences
         ~ Distribution of courses over instructors and Day/Times
 
         ! Weighted constraints
-        ! Backtracking
+      X ! Backtracking
         ! All solutions
         ! Heuristic evaluation
 
