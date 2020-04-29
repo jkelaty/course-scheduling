@@ -46,20 +46,25 @@ class Solver():
         unassigned_section = self.is_complete_assignment()
 
         if not unassigned_section:
-            return self.courses
+            # TODO: create deep copy
+            return [self.courses]
 
-        result = None
+        results = list()
 
         print(unassigned_section)
 
+        # For a given section, determines if the timeslot, room,
+        # or instructor is unassigned, and then iterates through
+        # the var's domain to find a valid assignment
         if not unassigned_section.timeslot:
             for timeslot in Course.timeslots:
 
                 unassigned_section.timeslot = timeslot
                 if self.is_valid_assignment():
                     result = self.solve()
-                    if result:
-                        return result
+                    if len(result):
+                        results.extend(result)
+                        break
                 else:
                     unassigned_section.timeslot = None
 
@@ -74,8 +79,9 @@ class Solver():
 
                 if self.is_valid_assignment():
                     result = self.solve()
-                    if result:
-                        return result
+                    if len(result):
+                        results.extend(result)
+                        break
                 else:
                     unassigned_section.room = None
                     self.room_assignments[room].remove(unassigned_section)
@@ -91,14 +97,16 @@ class Solver():
 
                 if self.is_valid_assignment():
                     result = self.solve()
-                    if result:
-                        return result
+                    if len(result):
+                        results.extend(result)
+                        break
                 else:
                     unassigned_section.instructor = None
                     self.instructor_assignments[instructor].remove(unassigned_section)
         
-        return result
+        return results
 
+    # Determines if all vars are assigned, else returns first unassigned var
     def is_complete_assignment(self):
         for subject in self.courses:
             for section in self.courses[subject]:
@@ -106,9 +114,12 @@ class Solver():
                     return section
         return None
 
+    # Constraints
     def is_valid_assignment(self):
         return self.room_collision() and self.instructor_collision()
 
+    # Determines if there are any courses scheduled 
+    # to use the same room at the same time
     def room_collision(self):
         for room in self.room_assignments:
 
@@ -121,11 +132,12 @@ class Solver():
                     if not sections[j].timeslot:
                         continue
                     elif sections[i].timeslot == sections[j].timeslot:
-                        #print(sections[i].timeslot, sections[j].timeslot)
                         return False
 
         return True
 
+    # Determines if there are any instructors teaching
+    # more than one course at the same time
     def instructor_collision(self):
         for instructor in self.instructor_assignments:
 
@@ -138,7 +150,6 @@ class Solver():
                     if not sections[j].timeslot:
                         continue
                     elif sections[i].timeslot == sections[j].timeslot:
-                        #print(instructor, sections[i].timeslot, sections[j].timeslot)
                         return False
 
         return True
@@ -197,6 +208,7 @@ class Course:
         #Timeslot( ['Fr'],       ( 900, 1015) )
     ]
 
+    # Create timeslots programmatically
     start = 800
     for _ in range(12):
         timeslots.append( Timeslot( ['Mo', 'We'], ( start,  start + 115) ) )
@@ -250,19 +262,40 @@ def read_in_csv():
 def write_to_csv(schedule):
     data = list()
 
+    # Prepare data to construct dataframe
     for subject in schedule:
         for section in schedule[subject]:
-            data.append( [section.subject, section.course, section.section, section.timeslot.days, section.timeslot.time, section.room, section.instructor] )
+            data.append([
+                section.subject,
+                section.course,
+                section.section,
+                section.timeslot.days,
+                section.timeslot.time,
+                section.room,
+                section.instructor
+            ])
 
-    pd.DataFrame(data).to_csv('schedule.csv', index=False, header=['subject','course','section','days','time','room','instructor'])
+    # CSV header
+    header = [
+        'subject',
+        'course',
+        'section',
+        'days',
+        'time',
+        'room',
+        'instructor'
+    ]
+
+    # Create dataframe and output to CSV
+    pd.DataFrame(data).to_csv('schedule.csv', header=header, index=False)
 
 
 def main():
     
-    courses  = read_in_csv()
-    solver   = Solver(courses)
-    schedule = solver.solve()
-    write_to_csv(schedule)
+    courses = read_in_csv()
+    solver  = Solver(courses)
+    results = solver.solve()
+    write_to_csv(results[0])
 
 if __name__ == '__main__':
     main()
