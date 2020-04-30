@@ -1,6 +1,4 @@
-import sys
 import copy
-
 import pandas as pd
 
 """
@@ -21,14 +19,12 @@ CS 350 Final Project: Course Scheduling
         ~ Instructor preferences
         ~ Distribution of courses over instructors and Day/Times
 
-        ! Weighted constraints
+        ! Hard vs soft constraints
       X ! Backtracking
         ! All solutions
-        ! Heuristic evaluation
 
     Notes:
         Do we consider 1/2/3/4 credit hour courses? Just 3? 3 and 4? (timeslots will differ)
-        Do we want room # assignment to be related to course enrollment capacity? (rooms will have varrying capacities)
         Do we want to manually define acceptable timeslots, or let algorithm generate as needed (random timeslots)?
         Potential reference:
             http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.44.8460&rep=rep1&type=pdf
@@ -46,8 +42,8 @@ class Solver():
         unassigned_section = self.is_complete_assignment()
 
         if not unassigned_section:
-            # TODO: create deep copy
-            return [self.courses]
+            # TODO: create deep copy and modify solve() for all solutions
+            return [copy.deepcopy(self.courses)]
 
         results = list()
 
@@ -57,7 +53,7 @@ class Solver():
         # or instructor is unassigned, and then iterates through
         # the var's domain to find a valid assignment
         if not unassigned_section.timeslot:
-            for timeslot in Course.timeslots:
+            for timeslot in Course.timeslots_3:
 
                 unassigned_section.timeslot = timeslot
                 if self.is_valid_assignment():
@@ -196,25 +192,17 @@ class Timeslot:
 
 class Course:
 
-    # Timeslot domain (TEST)
-    timeslots = [
-        #Timeslot( ['Mo', 'We'], ( 800,  915) ),
-        #Timeslot( ['Mo', 'We'], (1000, 1115) ),
-        #Timeslot( ['Mo', 'We'], (1600, 1715) ),
-        #Timeslot( ['Tu', 'Th'], (1400, 1515) ),
-        #Timeslot( ['Tu', 'Th'], (1000, 1115) ),
-        #Timeslot( ['Tu', 'Th'], (1530, 1645) ),
-        #Timeslot( ['Tu', 'Th'], (1500, 1615) ),
-        #Timeslot( ['Fr'],       ( 900, 1015) )
-    ]
+    # Timeslot domain
+    timeslots_3 = list()
 
-    # Create timeslots programmatically
-    start = 800
+    # Create timeslots programmatically for 3 credit hours
+    time = 800
     for _ in range(12):
-        timeslots.append( Timeslot( ['Mo', 'We'], ( start,  start + 115) ) )
-        timeslots.append( Timeslot( ['Tu', 'Th'], ( start,  start + 115) ) )
-        timeslots.append( Timeslot( ['Fr'],       ( start,  start + 115) ) )
-        start += 100
+        timeslots_3.append( Timeslot( ['Mo', 'We'], (time,  time + 115) ) )
+        timeslots_3.append( Timeslot( ['Tu', 'Th'], (time,  time + 115) ) )
+        timeslots_3.append( Timeslot( ['Fr'],       (time,  time + 240) ) )
+        time += 100
+    del time
 
     def __init__(self, subject, course, section, rooms, instructors):
         # Course attributes
