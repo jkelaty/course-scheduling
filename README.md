@@ -1,2 +1,2 @@
-# Course Scheduling using Constraint Satisfaction
+# Course Scheduling Using Constraint Satisfaction
  
