@@ -1,13 +1,26 @@
-import copy
-import pandas as pd
-
 """
 Authors: Jonathan Kelaty and Manal Zneit
 CS 350 Final Project: Course Scheduling
 
 """
 
+import pandas as pd
 
+"""
+Pesudocode for backtracking search:
+    if assignment is complete, then return assignment
+    var = select_unassigned_variable
+    for each value in order_domain_values
+        if value is consistent with assignment then
+            add {var = value} to assignment
+            result = backtracking_search()
+            if result != failure then result result
+            remove {var = value} from assignment
+    return failure
+
+
+    Assign vars - room #, day/time, instructor
+"""
 
 """
     TODO:
@@ -22,6 +35,12 @@ CS 350 Final Project: Course Scheduling
         ! Hard vs soft constraints
       X ! Backtracking
         ! All solutions
+
+
+    Timeslots: modify input csv to include data for morning/afternoon/evening timeslots, then define
+    possible each domain for m/a/e programmatically
+        - issues: multiple sections, split up courses across m/a/e evenly if multiple sections
+
 
     Notes:
         Do we consider 1/2/3/4 credit hour courses? Just 3? 3 and 4? (timeslots will differ)
@@ -42,8 +61,8 @@ class Solver():
         unassigned_section = self.is_complete_assignment()
 
         if not unassigned_section:
-            # TODO: create deep copy and modify solve() for all solutions
-            return [copy.deepcopy(self.courses)]
+            # TODO: create deep copy and modify solve() to find all possible solutions
+            return [self.courses]
 
         results = list()
 
@@ -56,6 +75,7 @@ class Solver():
             for timeslot in Course.timeslots_3:
 
                 unassigned_section.timeslot = timeslot
+
                 if self.is_valid_assignment():
                     result = self.solve()
                     if len(result):
@@ -71,6 +91,7 @@ class Solver():
 
                 if room not in self.room_assignments:
                     self.room_assignments[room] = list()
+
                 self.room_assignments[room].append(unassigned_section)
 
                 if self.is_valid_assignment():
@@ -89,6 +110,7 @@ class Solver():
 
                 if instructor not in self.instructor_assignments:
                     self.instructor_assignments[instructor] = list()
+
                 self.instructor_assignments[instructor].append(unassigned_section)
 
                 if self.is_valid_assignment():
@@ -151,30 +173,12 @@ class Solver():
         return True
 
 
-"""
-Pesudocode for backtracking search:
-    if assignment is complete, then return assignment
-    var = select_unassigned_variable
-    for each value in order_domain_values
-        if value is consistent with assignment then
-            add {var = value} to assignment
-            result = backtracking_search()
-            if result != failure then result result
-            remove {var = value} from assignment
-    return failure
-
-
-    Assign vars - room #, day/time, instructor
-"""
-
-
 class Timeslot:
     def __init__(self, days, time):
         self.days = days
         self.time = time
 
     # == operator overload used for checking if timeslots overlap
-    # Could potentially be optimized?
     def __eq__(self, other):
         all_days = set(self.days + other.days)
 
@@ -285,5 +289,7 @@ def main():
     results = solver.solve()
     write_to_csv(results[0])
 
+
 if __name__ == '__main__':
     main()
+
