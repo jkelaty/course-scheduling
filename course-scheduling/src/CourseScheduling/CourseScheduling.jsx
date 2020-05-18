@@ -88,7 +88,7 @@ export default class CourseScheduling extends React.Component {
     return (
       <>
         <h1 className="cs-header">
-          <a href="/">Course Scheduling</a>
+          <a href="/course-scheduling">Course Scheduling</a>
         </h1>
   
         <div className="cs-project-info">
