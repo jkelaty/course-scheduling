@@ -5,6 +5,7 @@
     display: inline-flex;
 
     .cs-timetable-header {
+        position: relative;
         width: 80px;
         border-bottom: 1px solid black;
         border-right: 1px solid black;
@@ -19,6 +20,10 @@
     .cs-table-filter {
         text-decoration: none;
         color: black;
+
+        .fa-filter {
+            font-size: 25px;
+        }
     }
 }
 
@@ -98,7 +103,7 @@
     border-radius: 10px;
     border: 1px solid black;
     top: calc( calc(var(--start-minute) * 100px / 60) + calc(var(--hour-index) * 5px));
-    height: calc( calc((var(--end-hour) - var(--start-hour))) * 100px );
+    height: calc(calc( calc((var(--end-hour) - var(--start-hour))) * 100px ) + calc(var(--end-minute) * 100px / 60));
     z-index: var(--course-index);
     left: calc(var(--hour-index) * 5px);
     width: 75%;
@@ -188,5 +193,24 @@
     float: right;
     line-height: normal;
     margin-top: 10px;
+}
+
+.cs-filters-arrow {
+    position: absolute;
+    color: white;
+    left: 50%;
+    top: -110%;
+    transform: translateX(-50%);
+    font-size: 40px;
+    animation: MoveUpDown 1.2s linear infinite;
+}
+
+@include keyframes(MoveUpDown) {
+    0%, 100% {
+        top: -110%;
+    }
+    50% {
+        top: -150%;
+    }
 }
 

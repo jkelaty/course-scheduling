@@ -28,6 +28,7 @@ export default class ScheduleViewer extends React.Component {
         this.state = {
             display_schedule : this.getDisplaySchedule(),
             filters_active: false,
+            filters_helper: true,
             filters: {
                 subjects:    {},
                 courses:     {},
@@ -230,7 +231,8 @@ export default class ScheduleViewer extends React.Component {
 
     openFilters() {
         this.setState({
-            filters_active: ! this.state.filters_active
+            filters_active: ! this.state.filters_active,
+            filters_helper: false
         });
     }
 
@@ -248,6 +250,13 @@ export default class ScheduleViewer extends React.Component {
                 <>
                     <div className="cs-table-header-wrapper">
                         <div className="cs-timetable-header">
+
+                            {this.state.filters_helper ? 
+                                <i className="fas fa-arrow-down cs-filters-arrow"></i>
+                            :
+                                null
+                            }
+
                             <a className="cs-table-filter" href="#/" onClick={() => this.openFilters()}>
                                 <i className="fas fa-filter"></i>
                             </a>
