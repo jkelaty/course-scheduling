@@ -53,7 +53,6 @@ export default class Scheduler extends React.Component {
             window.$(document).ready(function() {
                 window.$.ajax({
                     method: 'POST',
-                    crossDomain: true,
                     url: 'https://course-scheduling-jkelaty.herokuapp.com/schedule/',
                     data: {
                         courses: _this.courses,
