@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "eda4ab704e79936f6d0e41970642e8ab",
+    "revision": "6a1a5db6d626b541f93c4b345ce4aba8",
     "url": "/course-scheduling/index.html"
   },
   {
-    "revision": "3929069289a2c3026bd6",
+    "revision": "7c4765d5c1a87015fa3f",
     "url": "/course-scheduling/static/css/2.f1c8e96f.chunk.css"
   },
   {
-    "revision": "fd0e756e71b60b961e07",
-    "url": "/course-scheduling/static/css/main.6db764e7.chunk.css"
+    "revision": "04d41461c6c2958c4225",
+    "url": "/course-scheduling/static/css/main.6a4dd050.chunk.css"
   },
   {
-    "revision": "3929069289a2c3026bd6",
-    "url": "/course-scheduling/static/js/2.cfda9cac.chunk.js"
+    "revision": "7c4765d5c1a87015fa3f",
+    "url": "/course-scheduling/static/js/2.86cd5fb3.chunk.js"
   },
   {
     "revision": "e88a3e95b5364d46e95b35ae8c0dc27d",
-    "url": "/course-scheduling/static/js/2.cfda9cac.chunk.js.LICENSE.txt"
+    "url": "/course-scheduling/static/js/2.86cd5fb3.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "fd0e756e71b60b961e07",
-    "url": "/course-scheduling/static/js/main.6b8514c3.chunk.js"
+    "revision": "04d41461c6c2958c4225",
+    "url": "/course-scheduling/static/js/main.f620fe61.chunk.js"
   },
   {
     "revision": "5769300d6c7178f94cde",
