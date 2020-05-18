@@ -29,7 +29,7 @@ export default class CourseScheduling extends React.Component {
   }
 
   verifyInstructors() {
-    let instructors_file = document.getElementById('instructors-file').files[0];
+    let instructors_file = document.getElementById('preferences-file').files[0];
 
     if ( instructors_file && instructors_file.name.toLowerCase().endsWith('.csv') ) {
       this.setState({
@@ -129,22 +129,22 @@ export default class CourseScheduling extends React.Component {
             <br />
             <br />
 
-            <a className="cs-file-download-link" href="./templates/courses.csv" download>Template CSV</a>
+            <a className="cs-file-download-link" href="./templates/template-courses.csv" download>Template CSV</a>
             <br />
-            <a className="cs-file-download-link" href="./templates/courses.csv" download>Sample CSV</a>
+            <a className="cs-file-download-link" href="./templates/sample-courses.csv" download>Sample CSV</a>
 
             <br />
             <br />
 
-            <label htmlFor="instructors">Instructors: </label>
-            <input onChange={() => this.verifyInstructors()} type="file" id="instructors-file" name="instructors" accept=".csv" />
+            <label htmlFor="preferences">Preferences: </label>
+            <input onChange={() => this.verifyInstructors()} type="file" id="preferences-file" name="preferences" accept=".csv" />
 
             <br />
             <br />
 
-            <a className="cs-file-download-link" href="./templates/courses.csv" download>Template CSV</a>
+            <a className="cs-file-download-link" href="./templates/template-preferences.csv" download>Template CSV</a>
             <br />
-            <a className="cs-file-download-link" href="./templates/courses.csv" download>Sample CSV</a>
+            <a className="cs-file-download-link" href="./templates/sample-preferences.csv" download>Sample CSV</a>
 
             <br />
             <br />

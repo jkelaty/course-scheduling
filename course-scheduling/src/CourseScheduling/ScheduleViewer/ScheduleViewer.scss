@@ -108,6 +108,7 @@
     font-size: 14px;
     padding-left: 10px;
     padding-top: 10px;
+    cursor: default;
     @include transition(all 0.3s ease);
 
     .cs-course-code {
