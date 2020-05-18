@@ -50,10 +50,15 @@ export default class Scheduler extends React.Component {
         let _this = this;
 
         if ( _this.courses && _this.instructors ) {
+
+            window.courses = _this.courses;
+            window.instructors = _this.instructors;
+
             window.$(document).ready(function() {
                 window.$.ajax({
                     method: 'POST',
-                    url: 'https://course-scheduling-jkelaty.herokuapp.com/schedule/',
+                    crossDomain: true,
+                    url: 'https://course-scheduling-jkelaty.herokuapp.com/schedule',
                     data: {
                         courses: _this.courses,
                         preferences: _this.instructors
