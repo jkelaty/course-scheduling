@@ -18,7 +18,9 @@ export default class Scheduler extends React.Component {
             schedule: null,
             error: false
         };
+    }
 
+    componentDidMount() {
         this.run_scheduler();
     }
 
@@ -47,33 +49,28 @@ export default class Scheduler extends React.Component {
     received_file() {
         let _this = this;
 
-        if ( _this.courses && _this.instructors ) {            
-            var form = new FormData();
-            form.append("courses",     _this.courses);
-            form.append("preferences", _this.instructors);
-            
-            var settings = {
-                "url": "https://course-scheduling-jkelaty.herokuapp.com/schedule/",
-                "method": "POST",
-                "timeout": 0,
-                "processData": false,
-                "mimeType": "multipart/form-data",
-                "contentType": false,
-                "crossDomain": true,
-                "data": form
-            };
-            
-            window.$.ajax(settings)
-                .done(function(response) {
-                    _this.setState({
-                        schedule: JSON.parse(response)
-                    });
-                })
-                .fail(function(xhr, status, error) {
-                    _this.setState({
-                        error: true
-                    });
+        if ( _this.courses && _this.instructors ) {
+            window.$(document).ready(function() {
+                window.$.ajax({
+                    method: 'POST',
+                    crossDomain: true,
+                    url: 'https://course-scheduling-jkelaty.herokuapp.com/schedule/',
+                    data: {
+                        courses: _this.courses,
+                        preferences: _this.instructors
+                    },
+                    success: function(response) {
+                        _this.setState({
+                            schedule: JSON.parse(response)
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        _this.setState({
+                            error: true
+                        });
+                    }
                 });
+            });
         }
     }
 

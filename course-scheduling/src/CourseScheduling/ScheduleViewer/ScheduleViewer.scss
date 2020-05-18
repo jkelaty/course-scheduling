@@ -109,7 +109,7 @@
     padding-left: 10px;
     padding-top: 10px;
     cursor: default;
-    @include transition(all 0.3s ease);
+    @include transition(all 0.1s ease);
 
     .cs-course-code {
         text-align: center;
