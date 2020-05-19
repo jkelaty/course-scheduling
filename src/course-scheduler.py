@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri May 15 14:31:45 2020
-
-@author: User
-"""
-
 import pandas as pd
 from itertools import product
 import math
 import random
 
+# This program generates a consistent course schedule given a dataset of available
+# rooms, timeslots, instructors, and preferences
+
 class Course(object):
+    # a Course class that creates a new course instance with attributes (name, room, prof,...)
     def __init__(self, name):
         self.name = name
         self.prof = None
@@ -73,6 +70,7 @@ class Course(object):
     def setDay(self, x):
         self.day = x
  
+# a class that generates a schedule of courses
 class Schedule(object):
     def __init__(self):
         self.schedule = []
@@ -81,6 +79,10 @@ class Schedule(object):
         return self.schedule     
 
 def ToList(entry):
+    '''
+    Input: String entry
+    Returns a list of comma separated substrings
+    '''
     s = ''
     L = []
     try:
@@ -97,26 +99,30 @@ def ToList(entry):
     return L       
 
 def sameDay(s1, s2):
-    sameDay = 0
+    '''
+    Input: Strings representing days of the week
+    Returns a boolean value indicating that the strings have a day or more in common
+    '''
+    sameDay = False
     if s1 in ['M', 'MW', 'MTH', 'MF']:
         if s2 in ['M', 'MW', 'MTH', 'MF']:
-            sameDay = 1
+            sameDay = True
                     
     if s1 in ['T', 'TTH', 'TF']:
         if s2 in ['T', 'TTH', 'TF']:
-            sameDay = 1
+            sameDay = True
                     
     if s1 in ['W', 'MW', 'WF']:
         if s2 in ['W', 'MW', 'WF']:
-            sameDay = 1
+            sameDay = True
             
     if s1 in ['TH', 'MTH', 'TTH']:
         if s2 in ['TH', 'MTH', 'TTH']:
-            sameDay = 1      
+            sameDay = True     
                     
     if s1 in ['F', 'MF', 'TF', 'WF']:
         if s2 in ['F', 'MF', 'TF', 'WF']:
-            sameDay = 1
+            sameDay = True
             
     return sameDay
     
@@ -124,11 +130,11 @@ def smallData():
     frontier = []   # consists of all the nodes in the frontier of the search tree
     explored = []   # keeps track of the explored nodes of the backtracking search
     repeated = {}   # needed in the constraints to remove any repeated values
-    path = []       # path of the depth of the algorithm to determine a consistent schedule
-    threshold = 0 
+    path = []       # generated path of the depth-first search algorithm to determine a consistent schedule
+    threshold = 0   # threshold value to evaluate the schedule
     itr = 0
     
-    # adding the first course to start the backtracking search    
+    # adding the first course to start the backtracking search using an iterative approach  
     for tup in courses[root.getSchedule()[0].getName()]:        
         instance = Course(root.getSchedule()[0].getName())
         x = schedule[instance.getName()].getDuration()
@@ -146,7 +152,7 @@ def smallData():
               
     frontier.reverse() 
         
-    scheduleNB = 0      # to count the schedules
+    scheduleNB = 0
     current = frontier.pop()
     y = current     # y keeps track of the parent node in the search tree
     path.append(current)
@@ -171,6 +177,7 @@ def smallData():
             z = schedule[instance.getName()].getDay()
             instance.setDay(z)           
             
+            # mapping time periods throughout the day to timeslots
             if instance.getStartTime() in [8, 9, 10, 11, 12]:
                 instance.setTime("Morning")
                 
@@ -187,7 +194,7 @@ def smallData():
                     A = list(range(instance.getStartTime(), math.ceil(instance.getStartTime() + schedule[elt].getDuration()+0.25) + 1))
                     B = list(range(repeated[key][0][1], int(repeated[key][0][1] + repeated[key][0][2]) + 1))
                     if list(set(A) & set(B)) != []:     # if there's time conflict
-                        if sameDay(instance.getWeekDay(), repeated[key][0][3]) == 1:                          
+                        if sameDay(instance.getWeekDay(), repeated[key][0][3]):                          
                             flag = 1
                             break
                 # if 2 courses are scheduled with the same professor, they should have different time
@@ -195,17 +202,19 @@ def smallData():
                     A = list(range(instance.getStartTime(), math.ceil(instance.getStartTime() + schedule[elt].getDuration() + 0.25) + 1))
                     B = list(range(repeated[key][0][1], int(repeated[key][0][1] + repeated[key][0][2]) + 1))                    
                     if list(set(A) & set(B)) != []:     # if there's time conflict
-                        if sameDay(instance.getWeekDay(), repeated[key][0][3]) == 1:
+                        if sameDay(instance.getWeekDay(), repeated[key][0][3]):
                             flag = 1
                             break        
-            if flag == 0:   # if no time conflict, add the new course instance              
-                
+            if flag == 0:   # if no time conflict, add the new course instance                            
                 L.append(instance)
                     
         L.reverse()
         frontier = frontier + L 
         L = []
             
+        # if the schedule generated so far does not include all the courses, 
+        # add a new conflict-free course node to the search tree
+        
         if len(path) < len(root.getSchedule()):          
             current = frontier.pop()
     
@@ -239,12 +248,13 @@ def smallData():
                     
         while len(path) == len(root.getSchedule()): # finding the goal schedule
             val = 0
-            
+            # evaluate the schedule by adding the evaluation of each course node on the path
             for course in path:
                 evaluation(course)
                 val = val + course.getEval()
                 
             scheduleNB += 1  
+            # if the schedule's evaluation is greater than the threshold, update the threshold
             if val > threshold:
                 res = pd.DataFrame()
                 df3 = pd.DataFrame([['Subject', 'Course', 'Room', 'Class Day(s)', 'Class Time', 'Professor', 'Duration']])
@@ -252,9 +262,10 @@ def smallData():
                 itr += 1
                 threshold = val  
                 c = 0
-                for course in path:  #print out the consistent schedule
+                for course in path:  #save the consistent schedule with highest evaluation 
                     evaluation(course)
                     c = c + 1
+                    # formatting the time as AM/PM
                     if course.getStartTime() > 12:
                         course.setStartTime(str(course.getStartTime() - 12)+':00 PM')
                     elif course.getStartTime() == 12:    
@@ -266,6 +277,7 @@ def smallData():
                     ind = x.index(' ')
                     r = x[:ind]
                     t = x[ind:]
+                    # formatting the finalized schedule
                     df3 = pd.DataFrame([[r, t, course.getRoom(), course.getWeekDay(), course.getStartTime(), course.getProf(), str(int(course.getDuration()*60)) + ' mins']])
                     res = res.append(df3)
                 itr = 1
@@ -295,28 +307,42 @@ def smallData():
                 path.append(current)
                 y = current
         if itr == 1:
+            # writing to the output file
             res.to_csv('output.csv', header=False, index=False)
             break
+        # examining a new course to add to the search tree
         elt = CoursesNames[index+1] 
     
 def largeData():
     scheduleNb = 0
     val = 0
     threshold = 0 
+    itr = 0
+    count = 0
     
-    for n in range(30):
+    # iterating to find the consistent schedule
+    while True:
+        if itr == 1:
+            count += 1
+        if count > 50:
+            break
+        
         repeated = {} 
         c = 0
         L = {}
         
         for k in range(len(root.getSchedule())):
             flag = 0
+            m = 0 
+            # adding a new course to the schedule
             elt = CoursesNames[k]
             i = root.getSchedule()[k]
             x = courses[i.getName()]
+            # conducting a series of randomly generated states 
+            # meanwhile maintaining the satisfiability of most of the soft constraints
             for j in range(len(x)):
                 flag = 0
-                tup = x[random.randint(0, len(x) - 1)]
+                tup = x[m]
                 
                 for key in repeated: # search with inference as a preprocessing step (constraint propagation - arc and path consistency)
                     # if 2 courses are scheduled in the same room, they should have different time
@@ -324,8 +350,9 @@ def largeData():
                         A = list(range(tup[1], math.ceil(tup[1] + schedule[elt].getDuration()+0.25) + 1))
                         B = list(range(repeated[key][0][1], int(repeated[key][0][1] + repeated[key][0][2]) + 1))
                         if list(set(A) & set(B)) != []:     # if there's time conflict
-                            if sameDay(tup[3], repeated[key][0][3]) == 1:  
+                            if sameDay(tup[3], repeated[key][0][3]):  
                                 flag = 1
+                                m = random.randint(0, len(x) - 1)   # Random-restart if the algorithm is stuck in a local minimum
                                 break
                                 
                     # if 2 courses are scheduled with the same professor, they should have different time
@@ -333,14 +360,16 @@ def largeData():
                         A = list(range(tup[1], math.ceil(tup[1] + schedule[elt].getDuration() + 0.25) + 1))
                         B = list(range(repeated[key][0][1], int(repeated[key][0][1] + repeated[key][0][2]) + 1))                    
                         if list(set(A) & set(B)) != []:     # if there's time conflict
-                            if sameDay(tup[3], repeated[key][0][3]) == 1:
+                            if sameDay(tup[3], repeated[key][0][3]):
                                 flag = 1
+                                m = random.randint(0, len(x) - 1)   # Random-restart if the algorithm is stuck in a local minimum
                                 break
                                                  
                 if flag == 0:   # if no time conflict, add the course to the schedule
                     repeated[i.getName()] = ((tup[0], tup[1], i.getDuration(), tup[3]), (tup[1], tup[2], tup[3]))              
                     L[i] = tup
-                    if len(L) == len(root.getSchedule()):
+                    if len(L) == len(root.getSchedule()):   # finding the goal schedule
+                        itr = 1
                         val = 0                        
                         scheduleNb += 1
                         for t in CoursesNames:
@@ -353,22 +382,23 @@ def largeData():
             
                             elif L[s][1] in [17, 18, 19, 20]:
                                 s.setTime("Evening")                            
-                            
+                        # evaluate the schedule by adding the evaluation of each course node on the path    
                         for t in CoursesNames:
                             s= schedule[t]
                             s.setProf(L[s][2])
                             evaluation(s)
                             val = val + s.getEval()                        
-                            
+                        # if the schedule's evaluation is greater than the threshold, update the threshold    
                         if val >= threshold:
                             threshold = val                                               
                             res = pd.DataFrame()
                             df3 = pd.DataFrame([['Subject', 'Course', 'Room', 'Class Day(s)', 'Class Time', 'Professor', 'Duration']])
                             res = res.append(df3)
                             
-                            for t in CoursesNames:
+                            for t in CoursesNames:  #save the consistent schedule with highest evaluation 
                                 s = schedule[t]   
-                                c += 1                                
+                                c += 1          
+                                # formatting the time as AM/PM
                                 if L[s][1] > 12:
                                     s.setStartTime(str(L[s][1] - 12)+':00 PM')                                                           
                                 elif L[s][1] == 12: 
@@ -391,6 +421,10 @@ def largeData():
         res = res.append(df3)
                 
 def evaluation(instance):
+    '''
+    Input: a course instance
+    Returns an evaluation of a course instance satisfying the soft constraints 
+    '''
     p = 0
     prof = instance.getProf()            
     if prof in profTimePreference and instance.getTime() in profTimePreference[prof]:
@@ -437,6 +471,7 @@ if __name__ == "__main__":
             duration = time/2
         for j in range(int(df.iloc[i, 2])):               
             root.getSchedule()[k].setDuration(duration)
+            random.shuffle(daysPerWeek)
             root.getSchedule()[k].setDay(daysPerWeek)
             k = k + 1           
         i += 1
@@ -457,6 +492,7 @@ if __name__ == "__main__":
         
         if profTimePreference1 != []:
             if courseTimePreference != []:
+                # if no conflict between the professor's and course time preferences
                 if profTimePreference1[0] == courseTimePreference[0]:
                     for j in range(int(df.iloc[i, 2])):               
                         root.getSchedule()[k].setTime(profTimePreference1[0])
@@ -497,6 +533,7 @@ if __name__ == "__main__":
     i = 1
     k = 0       
     while i < df.shape[0]:
+        # specifying the domain values for each variable
         rooms = ToList(df.iloc[i, 3])
         random.shuffle(rooms)
         profs = ToList(df.iloc[i, 4])
@@ -512,7 +549,7 @@ if __name__ == "__main__":
             profPreference = profs   
         
         for l in range(int(df.iloc[i, 2])):  
-                            
+            # mapping the times (morning, afternoon, evening) to hours
             if  root.getSchedule()[k].getTime() == 'Morning':
                 root.getSchedule()[k].setStartTime((root.getSchedule()[k].getWeekDay(), [8, 9, 10, 11, 12]))
             elif root.getSchedule()[k].getTime() == 'Afternoon':
@@ -528,10 +565,11 @@ if __name__ == "__main__":
         i += 1
         
     i = 1
+    # obtaining and encoding the soft constraints from the preference .csv file
     profTimePreference = {}
     profCoursePreference = {}
     
-    file = input("Enter the soft preferences filename: ")
+    file = input("Enter the soft constraints filename: ")
     preferenceData = pd.read_csv(file, header=None)
     df1 = pd.DataFrame(preferenceData)
         
@@ -548,3 +586,4 @@ if __name__ == "__main__":
         smallData()
     else:
         largeData()
+        

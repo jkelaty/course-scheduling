@@ -222,7 +222,7 @@ export default class ScheduleViewer extends React.Component {
 
     validFilters(filters) {
         for (var type in filters) {
-            if ( ! window.$.isEmptyObject(filters[type]) ) {
+            if ( Object.keys(filters[type]).length !== 0 ) {
                 return true;
             }
         }

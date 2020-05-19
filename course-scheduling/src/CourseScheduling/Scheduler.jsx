@@ -21,10 +21,10 @@ export default class Scheduler extends React.Component {
     }
 
     componentDidMount() {
-        this.run_scheduler();
+        this.read_in_files();
     }
 
-    run_scheduler() {
+    read_in_files() {
         let _this = this;
 
         if ( _this.courses_file ) {
@@ -49,33 +49,54 @@ export default class Scheduler extends React.Component {
     received_file() {
         let _this = this;
 
-        if ( _this.courses && _this.instructors ) {
+        if ( this.courses && this.instructors ) {
 
-            window.courses = _this.courses;
-            window.instructors = _this.instructors;
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    courses: this.courses,
+                    preferences: this.instructors
+                })
+            };
+            
+            fetch('https://course-scheduling-jkelaty.herokuapp.com/schedule', requestOptions)
+                .then(response => response.text())
+                .then((job_id) => {
+                    _this.ping_scheduler(job_id.replace('rq:job:', ''));
+                })
+                .catch(error => {
+                    _this.setState({
+                        error: true
+                    });
+                });
+        }
+    }
 
-            window.$(document).ready(function() {
-                window.$.ajax({
-                    method: 'POST',
-                    crossDomain: true,
-                    url: 'https://course-scheduling-jkelaty.herokuapp.com/schedule',
-                    data: {
-                        courses: _this.courses,
-                        preferences: _this.instructors
-                    },
-                    success: function(response) {
-                        _this.setState({
-                            schedule: JSON.parse(response)
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        _this.setState({
-                            error: true
-                        });
-                    }
+    ping_scheduler(job_id) {
+        let _this = this;
+
+        fetch('https://course-scheduling-jkelaty.herokuapp.com/schedule/' + job_id, { method: 'Get' })
+            .then(response => response.text())
+            .then((res) => {
+                if ( res === 'Not yet' ) {
+                    setTimeout(function() {
+                        _this.ping_scheduler(job_id);
+                    }, 3000);
+                }
+                else {
+                    _this.setState({
+                        schedule: JSON.parse(res)
+                    });
+                }
+            })
+            .catch(error => {
+                this.setState({
+                    error: true
                 });
             });
-        }
     }
 
     render() {

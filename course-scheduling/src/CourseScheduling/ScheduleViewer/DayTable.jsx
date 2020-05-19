@@ -19,7 +19,7 @@ export default function DayTable(props) {
                 
                 ++course_index;
 
-                if ( hour_index < 5) {
+                if ( hour_index < 10) {
                     ++hour_index;
                 }
             }

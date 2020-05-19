@@ -12,7 +12,7 @@
     }
 
     .cs-daytable-header {
-        width: calc(calc(100vw - 90px) / 5);
+        width: calc(calc(100vw - 100px) / 5);
         border-bottom: 1px solid black;
         border-right: 1px solid black;
         cursor: default;
@@ -80,7 +80,7 @@
 
 .cs-dayslot {
     height: 100px;
-    width: calc(calc(100vw - 90px) / 5);
+    width: calc(calc(100vw - 100px) / 5);
     position: relative;
     background: #cccccc;
     border-bottom: 1px solid black;
