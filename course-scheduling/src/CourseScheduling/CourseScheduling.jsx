@@ -75,7 +75,7 @@ export default class CourseScheduling extends React.Component {
   Reset() {
     return (
       <>
-        <a href="#/" onClick={() => this.reset()}>
+        <a title="Reset" href="#/" onClick={() => this.reset()}>
           <div className="cs-reset">
             <i className="fas fa-undo" />
           </div>
@@ -88,13 +88,14 @@ export default class CourseScheduling extends React.Component {
     return (
       <>
         <h1 className="cs-header">
-          <a href="/course-scheduling">Course Scheduling</a>
+          <a href="/course-scheduling">
+            <i className="fas fa-graduation-cap cs-header-cap"></i>
+            Course Scheduling
+          </a>
         </h1>
   
         <div className="cs-project-info">
-          <p className="cs-authors">
-            Authors: Jonathan Kelaty, Manal Zneit
-          </p>
+          <p className="cs-contributors">Contributors: Jonathan Kelaty, Manal Zneit</p>
   
           <p className="cs-project-link">
             <a href="https://github.com/jkelaty/course-scheduling" target="_blank" rel="noopener noreferrer">
@@ -117,7 +118,7 @@ export default class CourseScheduling extends React.Component {
             scheduling for universities as a Constraint Satisfaction Problem. Our
             objective when designing the interface for this project was to create a
             tool that can be practically used using readily available information
-            provided by any school. To use this tool, simply upload a CSV with course
+            provided by any institution. To use this tool, simply upload a CSV with course
             information and a CSV containing instructor's preferences for certain scheduling
             parameters. Sample CSVs and templates can be found below.
           </p>
@@ -129,9 +130,9 @@ export default class CourseScheduling extends React.Component {
             <br />
             <br />
 
-            <a className="cs-file-download-link" href="./templates/template-courses.csv" download>Template CSV</a>
-            <br />
             <a className="cs-file-download-link" href="./templates/sample-courses.csv" download>Sample CSV</a>
+            <br />
+            <a className="cs-file-download-link" href="./templates/template-courses.csv" download>Template CSV</a>
 
             <br />
             <br />
@@ -142,9 +143,9 @@ export default class CourseScheduling extends React.Component {
             <br />
             <br />
 
-            <a className="cs-file-download-link" href="./templates/template-preferences.csv" download>Template CSV</a>
-            <br />
             <a className="cs-file-download-link" href="./templates/sample-preferences.csv" download>Sample CSV</a>
+            <br />
+            <a className="cs-file-download-link" href="./templates/template-preferences.csv" download>Template CSV</a>
 
             <br />
             <br />

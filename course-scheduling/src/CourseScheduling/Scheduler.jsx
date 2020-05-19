@@ -116,8 +116,9 @@ export default class Scheduler extends React.Component {
                 :
 
                     <div className="cs-loading">
-                        <PacmanLoad size='50px' color='white' />
+                        <PacmanLoad size='50px' color='#FFEE00' />
                     </div>
+
                 }
             </>
         );

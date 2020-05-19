@@ -257,7 +257,7 @@ export default class ScheduleViewer extends React.Component {
                                 null
                             }
 
-                            <a className="cs-table-filter" href="#/" onClick={() => this.openFilters()}>
+                            <a title="Filters" className="cs-table-filter" href="#/" onClick={() => this.openFilters()}>
                                 <i className="fas fa-filter"></i>
                             </a>
                         </div>

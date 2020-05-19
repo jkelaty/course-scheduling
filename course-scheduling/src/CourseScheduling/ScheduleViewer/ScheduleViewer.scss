@@ -203,9 +203,9 @@
     color: white;
     left: 50%;
     top: -110%;
-    transform: translateX(-50%);
     font-size: 40px;
-    animation: MoveUpDown 1.2s linear infinite;
+    @include transform(translateX(-50%));
+    @include animation(MoveUpDown 1.2s linear infinite);
 }
 
 @include keyframes(MoveUpDown) {
@@ -216,4 +216,3 @@
         top: -150%;
     }
 }
-
