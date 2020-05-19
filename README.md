@@ -2,23 +2,25 @@
 
 ## Contents
 
-- [Features](#features)
+- [Implementation](#implementation)
 - [Team](#team)
-- [Visualization](#license)
+- [Visualization](#visualization)
 
----
+
 
 ## Implementation
 
 - Local search
 - Random restarts
 
+
+
 ## Team
 
 - Jonathan Kelaty
 - Manal Zneit
 
----
+
 
 ## Visualization
 
