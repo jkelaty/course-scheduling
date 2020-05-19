@@ -24,6 +24,8 @@
 
 ## Visualization
 
+![visualization GIF](https://raw.githubusercontent.com/jkelaty/course-scheduling/master/img/visualization.gif)
+
 View visualization tool <a href="https://jkelaty.github.io/course-scheduling/" target="_blank">`here`</a>
  
 
