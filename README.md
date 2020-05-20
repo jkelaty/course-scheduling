@@ -32,7 +32,7 @@
 - Visualization tool built using React
 - Upload course data and visualize schedule
 - Filter for constrained variables
-- <a href="https://jkelaty.github.io/course-scheduling/" target="_blank">View visualization tool</a>
+- <a href="https://jkelaty.github.io/course-scheduling/" target="_blank">View visualization tool here</a>
 
 ![visualization GIF](https://raw.githubusercontent.com/jkelaty/course-scheduling/master/img/visualization.gif)
 
