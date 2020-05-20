@@ -17,7 +17,8 @@
 - **Iterative Approach**
     - Used for large datasets
     - Selective randomness to domain values
-    - Clusters consistent schedules and selects highest evaluation
+    - Clusters consistent schedules and selects highest evaluation after many iterations
+    ![](img/graph.png)
 
 - **Random restarts**
     - Used to prevent getting stuck in local minimum
@@ -49,7 +50,7 @@
 - Filter for constrained variables
 - <a href="https://jkelaty.github.io/course-scheduling/" target="_blank">View visualization tool here</a>
 
-![visualization GIF](https://raw.githubusercontent.com/jkelaty/course-scheduling/master/img/visualization.gif)
+![visualization GIF](img/visualization.gif)
 
 ## Data
 - Course data was scrapped from CUNY course offerings (~2000 sections)
