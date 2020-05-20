@@ -18,7 +18,10 @@
     - Used for large datasets
     - Selective randomness to domain values
     - Clusters consistent schedules and selects highest evaluation after many iterations
-    ![](img/graph.png)
+
+<div align="center">
+    <img src="img/graph.png">
+</div>
 
 - **Random restarts**
     - Used to prevent getting stuck in local minimum
