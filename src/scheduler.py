@@ -633,5 +633,4 @@ if __name__ == "__main__":
             x_data.append(dfx.iloc[i, 0])
             y_data.append(dfx.iloc[i, 1])
         plt.plot(x_data, y_data)
-        plt.show()
-
+        #plt.show()
