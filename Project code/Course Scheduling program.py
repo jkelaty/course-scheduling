@@ -2,6 +2,8 @@ import pandas as pd
 from itertools import product
 import math
 import random
+#import matplotlib.pyplot as plt
+import pylab as plt
 
 # This program generates a consistent course schedule given a dataset of available
 # rooms, timeslots, instructors, and preferences
@@ -161,7 +163,8 @@ def smallData():
     repeated[current.getName()] = ((current.getRoom(), current.getStartTime(), current.getDuration(), current.getWeekDay()), (current.getStartTime(), current.getProf(), current.getWeekDay()))
     
     elt = CoursesNames[index+1]
-        
+    evaluate = pd.DataFrame()   
+   
     while len(frontier) > 0:
         L = []  # list of consistent child nodes
         for tup in courses[elt]:       
@@ -254,6 +257,8 @@ def smallData():
                 val = val + course.getEval()
                 
             scheduleNB += 1  
+            df4 = pd.DataFrame([[scheduleNB, val]])
+            evaluate = evaluate.append(df4)
             # if the schedule's evaluation is greater than the threshold, update the threshold
             if val > threshold:
                 res = pd.DataFrame()
@@ -280,8 +285,8 @@ def smallData():
                     # formatting the finalized schedule
                     df3 = pd.DataFrame([[r, t, course.getRoom(), course.getWeekDay(), course.getStartTime(), course.getProf(), str(int(course.getDuration()*60)) + ' mins']])
                     res = res.append(df3)
-                itr = 1
-                break
+#                itr = 1
+#                break
             
             current = frontier.pop()
     
@@ -306,12 +311,17 @@ def smallData():
                 path.pop()
                 path.append(current)
                 y = current
-        if itr == 1:
+#        if itr >20:
+        if scheduleNB > 20:
             # writing to the output file
             res.to_csv('output.csv', header=False, index=False)
+            evaluate.to_csv('graph.csv', header=False, index=False)
             break
         # examining a new course to add to the search tree
-        elt = CoursesNames[index+1] 
+        try:
+            elt = CoursesNames[index+1] 
+        except:
+            break
     
 def largeData():
     scheduleNb = 0
@@ -319,6 +329,7 @@ def largeData():
     threshold = 0 
     itr = 0
     count = 0
+    evaluate = pd.DataFrame()
     
     # iterating to find the consistent schedule
     while True:
@@ -387,7 +398,9 @@ def largeData():
                             s= schedule[t]
                             s.setProf(L[s][2])
                             evaluation(s)
-                            val = val + s.getEval()                        
+                            val = val + s.getEval()   
+                        df4 = pd.DataFrame([[scheduleNb, val]])
+                        evaluate = evaluate.append(df4)
                         # if the schedule's evaluation is greater than the threshold, update the threshold    
                         if val >= threshold:
                             threshold = val                                               
@@ -415,6 +428,7 @@ def largeData():
                 
     try: 
         res.to_csv('output.csv', header=False, index=False)
+        evaluate.to_csv('graph.csv', header=False, index=False)
     except:
         res = pd.DataFrame()
         df3 = pd.DataFrame([['Course Name', 'Room', 'Class Day(s)', 'Class Time', 'Professor', 'Duration', 'Daytime']])
@@ -426,16 +440,24 @@ def evaluation(instance):
     Returns an evaluation of a course instance satisfying the soft constraints 
     '''
     p = 0
+    q = 0
+    r = 0
     prof = instance.getProf()            
     if prof in profTimePreference and instance.getTime() in profTimePreference[prof]:
-        p += 1
+        p += 1.6
     s = instance.getName()  
     index = s.index('-')
     t = s[:index]
     if prof in profCoursePreference and t in profCoursePreference[prof]:
-        p += 1   
+        q += 1   
+    if instance.getTime() in courseTimePref[instance.getName()]:
+        r += 5
+    # the weights are based on experimentation and multiple runs of the algorithm, 
+    # some parameters are given more weight(for ex course time has more preference than
+    # instructor's course preference)
+    evaluate = 5.2*r + 1.67*q + 0.54*p 
         
-    instance.setEval(p)                    
+    instance.setEval(evaluate)                    
     
 if __name__ == "__main__":
 
@@ -565,6 +587,17 @@ if __name__ == "__main__":
         i += 1
         
     i = 1
+    k = 0
+
+    courseTimePref = {}
+    while i < df.shape[0]:
+        courseT = ToList(df.iloc[i, 9])
+        for j in range(int(df.iloc[i, 2])):               
+            courseTimePref[root.getSchedule()[k].getName()] = courseT
+            k = k + 1   
+             
+        i += 1
+    
     # obtaining and encoding the soft constraints from the preference .csv file
     profTimePreference = {}
     profCoursePreference = {}
@@ -572,10 +605,14 @@ if __name__ == "__main__":
     file = input("Enter the soft constraints filename: ")
     preferenceData = pd.read_csv(file, header=None)
     df1 = pd.DataFrame(preferenceData)
-        
+    
+    i = 1
+    k = 0
+    
     while i < df1.shape[0]:
         timePreference = ToList(df1.iloc[i, 1])
         coursePreference = ToList(df1.iloc[i, 2])
+       
         if timePreference != []:
             profTimePreference[df1.iloc[i, 0]] = timePreference
         if coursePreference != []:
@@ -586,4 +623,16 @@ if __name__ == "__main__":
         smallData()
     else:
         largeData()
+        x_data = []
+        y_data = []
+        plots = pd.read_csv('graph.csv', header=None)
+        dfx = pd.DataFrame(plots)
+        plt.xlabel("Time")
+        plt.ylabel("Evaluation")
+        for i in range(dfx.shape[0]): 
+            x_data.append(dfx.iloc[i, 0])
+            y_data.append(dfx.iloc[i, 1])
+        plt.plot(x_data, y_data)
         
+    
+
