@@ -10,15 +10,29 @@
 - [Data](#data)
 
 ## Implementation
-- **Local search**
+
+- **Backtracking Search**
+    - Used for small datasets
+
+- **Iterative Approach**
+    - Used for large datasets
+    - Selective randomness to domain values
+    - Clusters consistent schedules and selects highest evaluation
 
 - **Random restarts**
-    - Implemented to satisfy the maximum number of soft constraints (instructor preferences)
+    - Used to prevent getting stuck in local minimum
+
+- **Hard Constraints**
+    - Instructor time conflicts
+    - Room time conflicts
+
+- **Soft Constraints**
+    - Instructor course/time preferences
 
 ## Contributions
 
 ### Team
-- Algorithm implementation development
+- Both members contributed toward developing the scheduling algorithm and discussing implementation problems and ideas
 
 ### Jonathan Kelaty
 - Built visualization tool
@@ -29,7 +43,8 @@
 - Created test datasets
 
 ## Visualization
-- Visualization tool built using React
+- Visualization tool built using React for frontend
+- Backend API using Heroku to run scheduler
 - Upload course data and visualize schedule
 - Filter for constrained variables
 - <a href="https://jkelaty.github.io/course-scheduling/" target="_blank">View visualization tool here</a>
@@ -39,3 +54,4 @@
 ## Data
 - Course data was scrapped from CUNY course offerings (~2000 sections)
 - Normalized times, rooms, and instructor assignments
+- Successfully scheduled ~500 courses in < 20 seconds
