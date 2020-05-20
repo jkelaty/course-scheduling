@@ -50,7 +50,9 @@
 - Filter for constrained variables
 - <a href="https://jkelaty.github.io/course-scheduling/" target="_blank">View visualization tool here</a>
 
-![visualization GIF](img/visualization.gif)
+<div align="center">
+    ![visualization GIF](img/visualization.gif)
+</div>
 
 ## Data
 - Course data was scrapped from CUNY course offerings (~2000 sections)
