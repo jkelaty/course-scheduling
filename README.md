@@ -51,7 +51,7 @@
 - <a href="https://jkelaty.github.io/course-scheduling/" target="_blank">View visualization tool here</a>
 
 <div align="center">
-    ![visualization GIF](img/visualization.gif)
+    <img src="img/visualization.gif">
 </div>
 
 ## Data
